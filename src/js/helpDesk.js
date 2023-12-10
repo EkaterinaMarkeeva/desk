@@ -51,10 +51,16 @@ export default class HelpDesk {
     const confirmation = elem.closest('.confirmation');
 
     if (elem.className.includes('create')) {
+      const form = document.querySelector('.form');
+      
       if (ticket) {
+        if (form) form.remove();
+
         this.activTicket = ticket;
         this.ticketForm.createForm(ticket);
       } else {
+        if (form) form.remove();
+
         this.ticketForm.createForm();
       }
 
@@ -62,6 +68,10 @@ export default class HelpDesk {
     }
 
     if (elem.className.includes('delete')) {
+      const form = document.querySelector('.form');
+
+      if (form) form.remove();
+
       this.activTicket = ticket;
       
       this.ticketForm.createConfirmation();
