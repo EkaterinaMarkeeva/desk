@@ -80,79 +80,16 @@ export default class HelpDesk {
     } 
 
     if (elem.className.includes('ok')) {
-      const name = this.activTicket.querySelector('.ticket-name');
-      const description = this.activTicket.querySelector('.description');
-      const status = this.activTicket.querySelector('.ticket-status');
-      const date = this.activTicket.querySelector('.ticket-date');
-
-      const data = new Ticket({
-        id: this.activTicket.id,
-        name: name.textContent,
-        description: description.textContent,
-        status: status.id,
-        created: date.id
-      });
-      
-      // let remove = () => {
-      //   confirmation.remove();
-      //   this.activTicket.remove();
-        
-      //   this.activTicket = null;
-      // }
-
-      this.ticketService.delete(data, confirmation.remove());
-      this.activTicket.remove();
-
-      this.activTicket = null;
+      this.removeTicket(confirmation);
 
       return;
     }
      
     if (elem.className.includes('add')) {
       if (form.className.includes('add')) {
-        const name = form.querySelector('#short-description');
-        const description = form.querySelector('#detailed-description');
-        
-        const data = {name: name.value, 
-          description: description.value};
-
-        let add = (response) => {
-          if (response) {
-            form.remove();
-
-            this.ticketView.create([response]);
-          }
-        }
-        
-        this.ticketService.create(data, add);
+        this.addTicket(form);
       } else {
-        const name = form.querySelector('#short-description');
-        const description = form.querySelector('#detailed-description');
-        const status = this.activTicket.querySelector('.ticket-status');
-        const date = this.activTicket.querySelector('.ticket-date');
-        
-        const data = new Ticket({
-          id: this.activTicket.id,
-          name: name.value, 
-          description: description.value, 
-          status: status.id, 
-          created: date.id
-        });
-        
-        let update = (response) => {
-          if (response) {
-            form.remove();
-
-            this.activTicket = null;
-            const tickets = document.querySelectorAll('.ticket');
-
-            tickets.forEach(ticket => ticket.remove());
-
-            this.ticketView.create(response);
-          }
-        }
-        
-        this.ticketService.update(data, update);
+        this.updateTicket(form);
       }
 
       return;
@@ -170,30 +107,7 @@ export default class HelpDesk {
         elem.id = 'false';
       }
 
-      const name = ticket.querySelector('.ticket-name');
-      const status = ticket.querySelector('.ticket-status');
-      const description = ticket.querySelector('.description');
-      const date = ticket.querySelector('.ticket-date');
-
-      const data = new Ticket({
-        id: ticket.id,
-        name: name.textContent, 
-        description: description.textContent, 
-        status: status.id, 
-        created: Date.now(date.textContent)
-      });
-      
-      let update = (response) => {
-        if (response) {
-          const tickets = document.querySelectorAll('.ticket');
-
-          tickets.forEach(ticket => ticket.remove());
-
-          this.ticketView.create(response);
-        }
-      }
-      
-      this.ticketService.update(data, update);
+      this.updateStatus(ticket);
   
       return;
     }
@@ -215,5 +129,100 @@ export default class HelpDesk {
 
       return;
     }
+  }
+
+  addTicket(form) {
+    const name = form.querySelector('#short-description');
+    const description = form.querySelector('#detailed-description');
+    
+    const data = {name: name.value, 
+      description: description.value};
+
+    let add = (response) => {
+      if (response) {
+        form.remove();
+
+        this.ticketView.create([response]);
+      }
+    }
+    
+    this.ticketService.create(data, add);
+  }
+
+  updateTicket(form) {
+    const name = form.querySelector('#short-description');
+    const description = form.querySelector('#detailed-description');
+    const status = this.activTicket.querySelector('.ticket-status');
+    const date = this.activTicket.querySelector('.ticket-date');
+    
+    const data = new Ticket({
+      id: this.activTicket.id,
+      name: name.value, 
+      description: description.value, 
+      status: status.id, 
+      created: date.id
+    });
+    
+    let update = (response) => {
+      if (response) {
+        form.remove();
+
+        this.activTicket = null;
+        const tickets = document.querySelectorAll('.ticket');
+
+        tickets.forEach(ticket => ticket.remove());
+
+        this.ticketView.create(response);
+      }
+    }
+    
+    this.ticketService.update(data, update);
+  }
+
+  updateStatus(ticket) {
+    const name = ticket.querySelector('.ticket-name');
+    const status = ticket.querySelector('.ticket-status');
+    const description = ticket.querySelector('.description');
+    const date = ticket.querySelector('.ticket-date');
+
+    const data = new Ticket({
+      id: ticket.id,
+      name: name.textContent, 
+      description: description.textContent, 
+      status: status.id, 
+      created: Date.now(date.textContent)
+    });
+    
+    let update = (response) => {
+      if (response) {
+        const tickets = document.querySelectorAll('.ticket');
+
+        tickets.forEach(ticket => ticket.remove());
+
+        this.ticketView.create(response);
+      }
+    }
+    
+    this.ticketService.update(data, update);
+  }
+
+  removeTicket(confirmation) {
+    const name = this.activTicket.querySelector('.ticket-name');
+    const description = this.activTicket.querySelector('.description');
+    const status = this.activTicket.querySelector('.ticket-status');
+    const date = this.activTicket.querySelector('.ticket-date');
+
+    const data = new Ticket({
+      id: this.activTicket.id,
+      name: name.textContent,
+      description: description.textContent,
+      status: status.id,
+      created: date.id
+    });
+    
+    this.ticketService.delete(data, confirmation.remove());
+    this.activTicket.remove();
+
+    this.activTicket = null;
   }
 }
